@@ -106,6 +106,8 @@ function wsServerRequest(request) {
 			ptzStop(conn, params);
 		} else if(method === 'ptzHome') {
 			ptzHome(conn, params);
+		} else if(method === 'scanDevices'){
+			scanDevices(conn);
 		}
 	});
 
@@ -138,6 +140,33 @@ function startDiscovery(conn) {
 			}
 		}
 		let res = {'id': 'startDiscovery', 'result': devs};
+		conn.send(JSON.stringify(res));
+	}).catch((error) => {
+		let res = {'id': 'connect', 'error': error.message};
+		conn.send(JSON.stringify(res));
+	});
+}
+
+function scanDevices(conn){
+	devices = {};
+	let names = {};
+	onvif.startScan().then((device_list) => {
+		device_list.forEach((device) => {
+			let odevice = new onvif.OnvifDevice({
+				xaddr: device.xaddrs[0]
+			});
+			let addr = odevice.address;
+			devices[addr] = odevice;
+			names[addr] = device.name;
+		});
+		var devs = {};
+		for(var addr in devices) {
+			devs[addr] = {
+				name: names[addr],
+				address: addr
+			}
+		}
+		let res = {'id': 'scanDevices', 'result': devs};
 		conn.send(JSON.stringify(res));
 	}).catch((error) => {
 		let res = {'id': 'connect', 'error': error.message};
