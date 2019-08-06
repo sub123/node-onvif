@@ -89,7 +89,8 @@ OnvifManager.prototype.initWebSocketConnection = function() {
 	this.ws = new WebSocket('ws://' + document.location.host);
 	this.ws.onopen = function() {
 		console.log('WebSocket connection established.');
-		this.sendRequest('startDiscovery');
+		this.sendRequest('scanDevices');
+		//this.sendRequest('startDiscovery');
 	}.bind(this);
 	this.ws.onclose = function(event) {
 		console.log('WebSocket connection closed.');

@@ -128,6 +128,7 @@ function startDiscovery(conn) {
 			let odevice = new onvif.OnvifDevice({
 				xaddr: device.xaddrs[0]
 			});
+			console.log("xaddr : " + odevice.xaddr);
 			let addr = odevice.address;
 			devices[addr] = odevice;
 			names[addr] = device.name;
